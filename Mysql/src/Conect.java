@@ -136,23 +136,21 @@ public static void modi() throws SQLException{
  decision();
 }
 public static void procedimientos() throws SQLException{
-	int seleccion = 10;
-	String proce1 = "{call proc1("+seleccion+")}";
+	//ResultSet rs;
+	int seleccion = 40;
+	String proce1 = "{call proc1(?,?,?,?,?,?,?)}";
 	CallableStatement llamada= conexion.prepareCall(proce1);
-	llamada.executeUpdate();
-	String nombre=llamada.getString(1);
-	System.out.println(nombre);
-	
-	String sql = "{call prod1(?)}";
-	CallableStatement llamada = conexion.prepareCall(sql);
-	llamada.setInt(1, 10);
-
-	 
-	// execute getDBUSERByUserId store procedure
-	llamada.executeUpdate();
-	 
-	String userName = llamada.getString(1);
-	
+	llamada.setInt(1, seleccion);
+	llamada.registerOutParameter(2, java.sql.Types.INTEGER);
+	llamada.registerOutParameter(3, java.sql.Types.VARCHAR);
+	llamada.registerOutParameter(4, java.sql.Types.DATE);
+	llamada.registerOutParameter(5, java.sql.Types.VARCHAR);
+	llamada.registerOutParameter(6, java.sql.Types.INTEGER);
+	llamada.registerOutParameter(7, java.sql.Types.INTEGER);
+	//rs = llamada.executeQuery();
+	//if(rs.next()){
+	System.out.println("Los empleados son : " + llamada.getInt(2) + " " + llamada.getString(3));
+	//}
 }
 
 }
