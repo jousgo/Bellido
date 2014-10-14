@@ -136,7 +136,7 @@ public static void modi() throws SQLException{
  decision();
 }
 public static void procedimientos() throws SQLException{
-	//ResultSet rs;
+	
 	int seleccion = 40;
 	String proce1 = "{call proc1(?,?,?,?,?,?,?)}";
 	CallableStatement llamada= conexion.prepareCall(proce1);
@@ -147,10 +147,9 @@ public static void procedimientos() throws SQLException{
 	llamada.registerOutParameter(5, java.sql.Types.VARCHAR);
 	llamada.registerOutParameter(6, java.sql.Types.INTEGER);
 	llamada.registerOutParameter(7, java.sql.Types.INTEGER);
-	//rs = llamada.executeQuery();
-	//if(rs.next()){
-	System.out.println("Los empleados son : " + llamada.getInt(2) + " " + llamada.getString(3));
-	//}
-}
-
+	
+	llamada.executeUpdate();
+	System.out.println("Empleado numero: " + llamada.getInt(2) + " Nombre: " + llamada.getString(3) + " Fecha contratacion: " + llamada.getString(4) + " Poblacion:  " + llamada.getString(5) + " Salario: " + llamada.getInt(6) + " Departamento: " + llamada.getInt(7));
+	
+	}
 }
