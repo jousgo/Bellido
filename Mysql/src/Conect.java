@@ -6,9 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-import javax.xml.transform.Result;
-
-
 public class Conect {
 	static Statement sentencia;
 	static Connection conexion;
@@ -21,8 +18,8 @@ public class Conect {
    Class.forName("com.mysql.jdbc.Driver");
    conexion = DriverManager.getConnection("jdbc:mysql://localhost/empresa", "root", "");
    sentencia = conexion.createStatement();
-   //decision();
-   procedimientos();
+   decision();
+   //procedimientos();
   }
    catch (ClassNotFoundException cn) {cn.printStackTrace();}
    catch (SQLException e) {e.printStackTrace();}
@@ -31,14 +28,12 @@ public class Conect {
   
  public static void decision() throws SQLException{
  Scanner entrada=new Scanner(System.in);
- System.out.println("¿que quiere hacer? \n 1)Consultar \n 2)Modificar");
- 
- if(entrada.nextInt()==1){
-	 preguntar();
- }else{
-	 modificar();
+ System.out.println("¿que quiere hacer? \n 1)Consultar \n 2)Modificar \n 3)Procedimientos");
+ switch(entrada.nextInt()){
+ 	case 1: preguntar();break;
+ 	case 2: modificar();break;
+ 	case 3: procedimientos();break;
  }
- 
  }
   
 public static void preguntar() throws SQLException{
@@ -106,6 +101,11 @@ public static void consultar() throws SQLException{
 	  sentencia.close();
 	   			conexion.close();
 		}
+
+
+//------------------------------EJER 2-------------------------------------------------
+
+
 public static void modificar() throws SQLException{
 	System.out.println("Elige la modificación que quiere realizar: \n 1) Insertar empleados\n "
 			+ "2) Eliminar empleados \n "
@@ -135,23 +135,145 @@ public static void modi() throws SQLException{
  System.out.println("Se ha modificado correctamente");
  decision();
 }
+
+//------------------------------ EJER 3----------------------------------------
+
+
 public static void procedimientos() throws SQLException{
+	int resulco;
+	System.out.println("Elige la consulta que quiere realizar: \n 1) Mostrar los empleados que trabajan en un departamento. \n "
+			+ "2) A partir de un año, empleados contratados ese año \n "
+			+ "3) A partir de una localidad y un departamento, Empleados que trabajan en ese departamento que sean de dicha localidad. \n "
+			+ "4) A partir de una localidad y un salario, mostrar los empleados que trabaja3n en esa ciudad y cobran al menos ese salario. \n "
+			+ "5) A partir de un departamento y un pueso, incrementar el salario de los empleados de ese departamento en el citado porcentaje. \n ");
 	
-	int seleccion = 10;
-	String proce1 = "{call proc1(?,?,?,?,?,?,?)}";
+	Scanner entrada=new Scanner(System.in);
+	resulco=entrada.nextInt();
+	switch(resulco){
+	case 1: prod1();
+	break;
+	case 2: prod2();
+	break;
+	case 3: prod3();
+	break;
+	case 4: prod4();
+	break;
+	case 5: prod5();
+	break;
+	}
+	
+	
+}
+
+public static void prod1() throws SQLException{
+	System.out.println("Introduzca el puesto del empleado");
+	Scanner sc = new Scanner(System.in);
+	int seleccion= sc.nextInt();
+
+	String proce1 = "{call proc1(?)}";
 	CallableStatement llamada= conexion.prepareCall(proce1);
 	llamada.setInt(1, seleccion);
-	llamada.registerOutParameter(2, java.sql.Types.INTEGER);
+	/*llamada.registerOutParameter(2, java.sql.Types.INTEGER);
 	llamada.registerOutParameter(3, java.sql.Types.VARCHAR);
 	llamada.registerOutParameter(4, java.sql.Types.DATE);
 	llamada.registerOutParameter(5, java.sql.Types.VARCHAR);
 	llamada.registerOutParameter(6, java.sql.Types.INTEGER);
-	llamada.registerOutParameter(7, java.sql.Types.INTEGER);
+	llamada.registerOutParameter(7, java.sql.Types.INTEGER);*/
 	
-	ResultSet resultados;
+	ResultSet resul = llamada.executeQuery();
+	System.out.println("Numero empleado  Nombre     Fecha Contratación   Población   Salario  Departamento     ");
+	while(resul.next()){
+		System.out.println(resul.getInt(1)+ "                 " + resul.getString(2)+ "        " + resul.getString(3) + "           " + resul.getString(4) + "         " + resul.getInt(5) + "       " + resul.getInt(6));
+		
+	}
+		
+	//llamada.executeUpdate();
+	//System.out.println("Empleado numero: " + llamada.getInt(2) + " Nombre: " + llamada.getString(3) + " Fecha contratacion: " + llamada.getString(4) + " Poblacion:  " + llamada.getString(5) + " Salario: " + llamada.getInt(6) + " Departamento: " + llamada.getInt(7));
 	
-	llamada.executeUpdate();
-	System.out.println("Empleado numero: " + llamada.getInt(2) + " Nombre: " + llamada.getString(3) + " Fecha contratacion: " + llamada.getString(4) + " Poblacion:  " + llamada.getString(5) + " Salario: " + llamada.getInt(6) + " Departamento: " + llamada.getInt(7));
-	
+	}
+
+public static void prod2() throws SQLException{
+	System.out.println("Introduzca un año:");
+	Scanner sc = new Scanner(System.in);
+	int seleccion= sc.nextInt();
+
+	String proce1 = "{call proc2(?)}";
+	CallableStatement llamada= conexion.prepareCall(proce1);
+	llamada.setInt(1, seleccion);
+	ResultSet resul = llamada.executeQuery();
+	System.out.println("Numero empleado  Nombre     Fecha Contratación   Población   Salario  Departamento     ");
+	while(resul.next()){
+		System.out.println(resul.getInt(1)+ "                 " + resul.getString(2)+ "        " + resul.getString(3) + "           " + resul.getString(4) + "         " + resul.getInt(5) + "       " + resul.getInt(6));
+		
+	}
+		
+		
+	}
+public static void prod3() throws SQLException{
+	System.out.println("Introduzca localidad");
+	Scanner sc = new Scanner(System.in);
+	String localidad= sc.next();
+	System.out.println("Introduzca numero de departamento");
+	Scanner sc2 = new Scanner(System.in);
+	int departamento= sc.nextInt();
+
+	String proce1 = "{call proc3(?,?)}";
+	CallableStatement llamada= conexion.prepareCall(proce1);
+	llamada.setString(1, localidad);
+	llamada.setInt(2, departamento);
+	ResultSet resul = llamada.executeQuery();
+	System.out.println("Numero empleado  Nombre     Fecha Contratación   Población   Salario  Departamento     ");
+	while(resul.next()){
+		System.out.println(resul.getInt(1)+ "                 " + resul.getString(2)+ "        " + resul.getString(3) + "           " + resul.getString(4) + "         " + resul.getInt(5) + "       " + resul.getInt(6));
+		
+	}
+		
+		
+	}
+public static void prod4() throws SQLException{
+	System.out.println("Introduzca localidad");
+	Scanner sc = new Scanner(System.in);
+	String localidad= sc.next();
+	System.out.println("Introduzca salario");
+	Scanner sc2 = new Scanner(System.in);
+	int salario= sc.nextInt();
+
+	String proce1 = "{call proc4(?,?)}";
+	CallableStatement llamada= conexion.prepareCall(proce1);
+	llamada.setString(1, localidad);
+	llamada.setInt(2, salario);
+	ResultSet resul = llamada.executeQuery();
+	System.out.println("Numero empleado  Nombre     Fecha Contratación   Población   Salario  Departamento     ");
+	while(resul.next()){
+		System.out.println(resul.getInt(1)+ "                 " + resul.getString(2)+ "        " + resul.getString(3) + "           " + resul.getString(4) + "         " + resul.getInt(5) + "       " + resul.getInt(6));
+		
+	}
+		
+		
+	}
+public static void prod5() throws SQLException{
+	System.out.println("Introduzca porcentaje a subir de sueldo, numero de departamento y localidad ");
+	Scanner sc = new Scanner(System.in);
+	int sueldo= sc.nextInt();
+	System.out.println("Introduzca numero de departamento");
+	Scanner sc2 = new Scanner(System.in);
+	int departamento = sc.nextInt();
+	System.out.println("Introduzca porcentaje a subir de sueldo, numero de departamento y localidad ");
+	Scanner sc3 = new Scanner(System.in);
+	String localidad= sc.next();
+
+	String proce1 = "{call proc5(?,?,?)}";
+	CallableStatement llamada= conexion.prepareCall(proce1);
+	llamada.setInt(1, sueldo);
+	llamada.setInt(2, departamento);
+	llamada.setString(3, localidad);
+	ResultSet resul = llamada.executeQuery();
+	System.out.println("Numero empleado  Nombre     Fecha Contratación   Población   Salario  Departamento     ");
+	while(resul.next()){
+		System.out.println(resul.getInt(1)+ "                 " + resul.getString(2)+ "        " + resul.getString(3) + "           " + resul.getString(4) + "         " + resul.getInt(5) + "       " + resul.getInt(6));
+		
+	}
+		
+		
 	}
 }
