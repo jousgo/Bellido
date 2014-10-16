@@ -166,7 +166,7 @@ public static void procedimientos() throws SQLException{
 }
 
 public static void prod1() throws SQLException{
-	System.out.println("Introduzca el puesto del empleado");
+	System.out.println("Introduzca el departamento: ");
 	Scanner sc = new Scanner(System.in);
 	int seleccion= sc.nextInt();
 
@@ -231,7 +231,7 @@ public static void prod3() throws SQLException{
 		
 	}
 public static void prod4() throws SQLException{
-	System.out.println("Introduzca localidad");
+	System.out.println("Introduzca ciudad");
 	Scanner sc = new Scanner(System.in);
 	String localidad= sc.next();
 	System.out.println("Introduzca salario");
@@ -252,13 +252,13 @@ public static void prod4() throws SQLException{
 		
 	}
 public static void prod5() throws SQLException{
-	System.out.println("Introduzca porcentaje a subir de sueldo, numero de departamento y localidad ");
+	System.out.println("Introduzca porcentaje a subir de sueldo");
 	Scanner sc = new Scanner(System.in);
 	int sueldo= sc.nextInt();
 	System.out.println("Introduzca numero de departamento");
 	Scanner sc2 = new Scanner(System.in);
 	int departamento = sc.nextInt();
-	System.out.println("Introduzca porcentaje a subir de sueldo, numero de departamento y localidad ");
+	System.out.println("Introduzca localidad ");
 	Scanner sc3 = new Scanner(System.in);
 	String localidad= sc.next();
 
@@ -267,11 +267,11 @@ public static void prod5() throws SQLException{
 	llamada.setInt(1, sueldo);
 	llamada.setInt(2, departamento);
 	llamada.setString(3, localidad);
-	ResultSet resul = llamada.executeQuery();
-	System.out.println("Numero empleado  Nombre     Fecha Contratación   Población   Salario  Departamento     ");
-	while(resul.next()){
-		System.out.println(resul.getInt(1)+ "                 " + resul.getString(2)+ "        " + resul.getString(3) + "           " + resul.getString(4) + "         " + resul.getInt(5) + "       " + resul.getInt(6));
-		
+	int funciona=llamada.executeUpdate();
+	if(funciona==0){
+	System.out.println("Ha sido modificado");
+	}else{
+		System.out.println("Ha habido un error");
 	}
 		
 		
